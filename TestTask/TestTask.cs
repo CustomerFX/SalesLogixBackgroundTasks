@@ -12,7 +12,7 @@ namespace FX.Tasks
 	{
 		public override void Execute(System.Xml.XmlNode configuration)
 		{
-			using (var outfile = new StreamWriter(Path.Combine(HttpContext.Current.Server.MapPath("/"), "_TestTask_Log.txt")))
+			using (var outfile = new StreamWriter(@"C:\inetpub\wwwroot_SalesLogix\SlxClient\_TestTask_Log.txt"))
 			{
 				outfile.WriteLine(DateTime.Now.ToString() + " TestTask executed");
 				outfile.Close();
