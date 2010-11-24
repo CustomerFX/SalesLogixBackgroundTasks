@@ -3,6 +3,7 @@ using System.Reflection;
 using System.Threading;
 using System.Timers;
 using System.Xml;
+using log4net;
 
 namespace FX.Services.Components
 {
@@ -10,7 +11,8 @@ namespace FX.Services.Components
 	{
 		#region Fields
 
-		System.Timers.Timer timer = null;
+		private System.Timers.Timer timer = null;
+		private static readonly ILog _log = LogManager.GetLogger("TaskManagerService");
 
 		#endregion
 
@@ -56,12 +58,14 @@ namespace FX.Services.Components
 
 		public void Start()
 		{
+			_log.Info(string.Format("Task {0} starting", this.Name));
 			this.Stopped = false;
 			this.StartTask();
 		}
 
 		public void Stop()
 		{
+			_log.Info(string.Format("Task {0} stopping", this.Name));
 			this.Stopped = true;
 		}
 
@@ -71,6 +75,7 @@ namespace FX.Services.Components
 
 		private void Initialize()
 		{
+			_log.Info(string.Format("Initializing task {0}", this.Name));
 			this.Stopped = false;
 			this.Enabled = true;
 
@@ -92,8 +97,9 @@ namespace FX.Services.Components
 		{
 			try
 			{
-				this.IsRunning = true;
+				_log.Info(string.Format("Executing task {0}", this.Name));
 
+				this.IsRunning = true;
 				this.LastRunTime = DateTime.Now;
 
 				var method = this.TaskType.GetMethod("Execute");
@@ -111,9 +117,10 @@ namespace FX.Services.Components
 
 				this.IsLastRunSuccessful = true;
 			}
-			catch
+			catch (Exception ex)
 			{
 				this.IsLastRunSuccessful = false;
+				_log.Error("Error executing task " + this.Name, ex);
 			}
 			finally
 			{

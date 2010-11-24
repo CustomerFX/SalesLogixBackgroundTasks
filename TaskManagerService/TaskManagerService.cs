@@ -1,12 +1,13 @@
 ﻿using System;
+using System.Xml;
+using System.Web;
+using System.Collections.Generic;
 using Sage.Platform;
 using Sage.Platform.Application;
 using Sage.Platform.Data;
 using Sage.Platform.Security;
-using System.Collections.Generic;
-using System.Xml;
+using log4net;
 using FX.Services.Components;
-using System.Web;
 
 namespace FX.Services
 {
@@ -16,13 +17,9 @@ namespace FX.Services
 
 		public TaskManagerService()
 		{
-			XmlDocument xml = new XmlDocument();
-			xml.Load(HttpContext.Current.Server.MapPath("tasks.config"));
-			this._nodes = xml.SelectNodes("Tasks/Task");
-
+			LoadConfiguration();
 			Initialize();
-
-			this.StartTasks();
+			StartTasks();
 		}
 
 		#endregion
@@ -39,8 +36,10 @@ namespace FX.Services
 
 		#region Fields
 
-		public static List<Task> _tasks = null;
+		private static readonly ILog _log = LogManager.GetLogger("TaskManagerService");
 		private XmlNodeList _nodes = null;
+
+		public static List<Task> Tasks = null;
 
 		#endregion
 
@@ -48,17 +47,21 @@ namespace FX.Services
 
 		public void StartTasks()
 		{
-			foreach (Task task in _tasks)
+			foreach (Task task in Tasks)
 			{
 				if (!task.IsRunning)
+				{
+					_log.Info("Starting task " + task.Name);
 					task.Start();
+				}
 			}
 		}
 
 		public void StopTasks()
 		{
-			foreach (Task task in _tasks)
+			foreach (Task task in Tasks)
 			{
+				_log.Info("Stopping task " + task.Name);
 				task.Stop();
 			}
 		}
@@ -67,9 +70,27 @@ namespace FX.Services
 
 		#region Private Methods
 
+		private void LoadConfiguration()
+		{
+			_log.Info("Service starting. Loading tasks.config");
+
+			try
+			{
+				var config = new XmlDocument();
+				config.Load(HttpContext.Current.Server.MapPath("tasks.config"));
+				this._nodes = config.SelectNodes("Tasks/Task");
+			}
+			catch (Exception ex)
+			{
+				_log.Error("Error loading task configuration", ex);
+			}
+
+			_log.Info(string.Format("Loaded configuration for {0} tasks", _nodes.Count));
+		}
+
 		private void Initialize()
 		{
-			_tasks = new List<Task>();
+			Tasks = new List<Task>();
 
 			foreach (XmlNode node in this._nodes)
 			{
@@ -91,12 +112,13 @@ namespace FX.Services
 							task.DataService = this.DataService;
 							task.UserService = this.UserService;
 
-							_tasks.Add(task);
+							Tasks.Add(task);
+							_log.Info("Added task " + task.Name);
 						}
 					}
-					catch
+					catch (Exception ex)
 					{
-						// Handle the exception or log a warning
+						_log.Error("Error parsing task configuration", ex);
 					}
 				}
 			}
