@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -19,6 +19,8 @@ public partial class TaskConsole : UserControl, ISmartPartInfoProvider
 		labelTasks.Text = string.Format("{0} task{1} configured", taskSvc.Tasks.Count, (taskSvc.Tasks.Count == 1 ? "" : "s"));
 
 		listTasks.DataSource = taskSvc.Tasks;
+		sectionNoItems.Visible = (taskSvc.Tasks.Count == 0);
+
 		listTasks.DataBind();
     }
 
