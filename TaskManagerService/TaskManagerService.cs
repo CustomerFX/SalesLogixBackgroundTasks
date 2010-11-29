@@ -39,7 +39,7 @@ namespace FX.Services
 		private static readonly ILog _log = LogManager.GetLogger("TaskManagerService");
 		private XmlNodeList _nodes = null;
 
-		public static List<Task> Tasks = null;
+		public List<Task> Tasks = null;
 
 		#endregion
 
@@ -49,7 +49,7 @@ namespace FX.Services
 		{
 			foreach (Task task in Tasks)
 			{
-				if (!task.IsRunning)
+				if (!task.IsRunning && task.Enabled)
 				{
 					_log.Info("Starting task " + task.Name);
 					task.Start();
@@ -61,8 +61,11 @@ namespace FX.Services
 		{
 			foreach (Task task in Tasks)
 			{
-				_log.Info("Stopping task " + task.Name);
-				task.Stop();
+				if (task.Enabled)
+				{
+					_log.Info("Stopping task " + task.Name);
+					task.Stop();
+				}
 			}
 		}
 
@@ -100,21 +103,17 @@ namespace FX.Services
 					{
 						XmlAttributeCollection attributes = node.Attributes;
 
-						if (bool.Parse(attributes["enabled"].Value))
-						{
-							Task task = new Task(double.Parse(attributes["interval"].Value));
+						Task task = new Task(double.Parse(attributes["interval"].Value));
+						task.Name = attributes["name"].Value;
+						task.TaskType = Type.GetType(attributes["type"].Value, true);
+						task.Enabled = bool.Parse(attributes["enabled"].Value);
+						task.Priority = (Priority)Convert.ToInt16(attributes["priority"].Value);
+						task.ConfigurationNode = node;
+						task.DataService = this.DataService;
+						task.UserService = this.UserService;
 
-							task.Name = attributes["name"].Value;
-							task.TaskType = Type.GetType(attributes["type"].Value, true);
-							task.Enabled = bool.Parse(attributes["enabled"].Value);
-							task.Priority = (Priority)Convert.ToInt16(attributes["priority"].Value);
-							task.ConfigurationNode = node;
-							task.DataService = this.DataService;
-							task.UserService = this.UserService;
-
-							Tasks.Add(task);
-							_log.Info("Added task " + task.Name);
-						}
+						Tasks.Add(task);
+						_log.Info("Added task " + task.Name);
 					}
 					catch (Exception ex)
 					{
