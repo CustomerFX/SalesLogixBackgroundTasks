@@ -47,7 +47,7 @@ public partial class TaskConsole : UserControl, ISmartPartInfoProvider
 	public ISmartPartInfo GetSmartPartInfo(Type smartPartInfoType)
 	{
 		ToolsSmartPartInfo tinfo = new ToolsSmartPartInfo();
-		tinfo.ImagePath = "/SlxClient/ImageResource.axd?scope=global&type=Global_Images&key=Task_Main_16x16";
+		tinfo.ImagePath = "/SlxClient/ImageResource.axd?scope=global&type=Global_Images&key=Task_Main_24x24";
 		tinfo.Title = "Task Console";
 
 		return tinfo;

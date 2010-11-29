@@ -1,4 +1,4 @@
-﻿<%@ Control Language="C#" AutoEventWireup="true" CodeFile="TaskConsole.ascx.cs" Inherits="TaskConsole" %>
+<%@ Control Language="C#" AutoEventWireup="true" CodeFile="TaskConsole.ascx.cs" Inherits="TaskConsole" %>
 <table border="0" cellpadding="1" cellspacing="0" class="formtable">
 	<col width="100%" />
 	<tr>
@@ -42,7 +42,7 @@
 				<FooterTemplate></FooterTemplate>
 			</asp:Repeater>
 			
-			<asp:PlaceHolder runat="server" ID="sectionNoItems" Visible="false">
+			<asp:PlaceHolder runat="server" ID="sectionNoItems">
 				<tr>
 					<td colspan="4">
 						No configured tasks. Visit <a href="http://customerfx.com/" target="_blank">customerfx.com</a> for information on creating custom background tasks.
