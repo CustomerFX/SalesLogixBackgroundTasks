@@ -58,6 +58,8 @@ namespace FX.Services.Components
 
 		public void Start()
 		{
+			if (!this.Enabled) return;
+
 			_log.Info(string.Format("Task {0} starting", this.Name));
 			this.Stopped = false;
 			this.StartTask();
@@ -65,6 +67,8 @@ namespace FX.Services.Components
 
 		public void Stop()
 		{
+			if (!this.Enabled) return;
+
 			_log.Info(string.Format("Task {0} stopping", this.Name));
 			this.Stopped = true;
 		}
