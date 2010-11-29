@@ -8,7 +8,7 @@ using System.Web;
 
 namespace FX.Tasks
 {
-	public class TestTask : TaskBase
+	public class FileWriteTestTask : TaskBase
 	{
 		public override void Execute(System.Xml.XmlNode configuration)
 		{
