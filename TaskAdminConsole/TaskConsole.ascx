@@ -1,8 +1,27 @@
 <%@ Control Language="C#" AutoEventWireup="true" CodeFile="TaskConsole.ascx.cs" Inherits="TaskConsole" %>
+
+<asp:UpdatePanel ID="UpdatePanel1" runat="server" >
+<Triggers>
+	<asp:AsyncPostBackTrigger ControlID="Timer1" EventName="Tick" />
+</Triggers>
+<ContentTemplate>
+
+<asp:Timer ID="Timer1" runat="server" Interval="3000">
+</asp:Timer>
+
 <table border="0" cellpadding="1" cellspacing="0" class="formtable">
 	<col width="100%" />
 	<tr>
 		<td>
+
+			<asp:ImageButton runat="server" ID="buttonStartAll" 
+				ImageUrl="~/images/BackgroundTasks/Task_Play_32x32.png" ImageAlign="AbsMiddle" 
+				ToolTip="Start all enabled tasks" Enabled="false" 
+				onclick="buttonStartAll_Click" />
+			<asp:ImageButton runat="server" ID="buttonPauseAll" 
+				ImageUrl="~/images/BackgroundTasks/Task_Pause_32x32.png" ImageAlign="AbsMiddle" 
+				ToolTip="Pause all tasks" Enabled="true" onclick="buttonPauseAll_Click" /><br />
+			<br />
 
 			<table border="0" cellpadding="0" cellspacing="0" style="width:98%;" class="datagrid">
 			<tbody>
@@ -12,7 +31,7 @@
 				</td>
 			</tr>
 
-			<asp:Repeater runat="server" ID="listTasks">
+			<asp:Repeater runat="server" ID="listTasks" OnItemDataBound="listTasks_ItemDataBound" OnItemCommand="listTasks_ItemCommand">
 				<HeaderTemplate>
 					<tr class="rowhead">
 						<th style="width:auto;">Task</td>
@@ -24,9 +43,13 @@
 				<ItemTemplate>
 					<tr style="<%# GetItemStyle() %>">
 						<td>
-							<img src="/SlxClient/images/BackgroundTasks/Task_<%# GetTaskStatus((FX.Services.Components.Task)DataBinder.GetDataItem(Container)) %>_16x16.png" />
+							<asp:ImageButton ID="buttonPause" runat="server" ImageAlign="AbsMiddle" ImageUrl="~/images/BackgroundTasks/Task_Pause_16x16.png" ToolTip="Pause task" CommandName="Pause" />
+							<asp:ImageButton ID="buttonStart" runat="server" ImageAlign="AbsMiddle" ImageUrl="~/images/BackgroundTasks/Task_Play_16x16.png" ToolTip="Start task" CommandName="Start" />
+							<asp:ImageButton ID="buttonDisabled" runat="server" ImageAlign="AbsMiddle" ImageUrl="~/images/BackgroundTasks/Task_NoStart_16x16.png" ToolTip="Task is disabled" CommandName="None" Enabled="false" Visible="false" />
+							<img src="images/BackgroundTasks/Task_<%# GetTaskStatus((FX.Services.Components.Task)DataBinder.GetDataItem(Container)) %>_16x16.png" />
 							&nbsp;
 							<%# DataBinder.Eval(Container.DataItem, "Name") %>
+							<%# Convert.ToBoolean(DataBinder.Eval(Container.DataItem, "Enabled")) ? "" : " (disabled)"%>
 						</td>
 						<td>
 							<%# GetTaskStatus((FX.Services.Components.Task)DataBinder.GetDataItem(Container)) %>
@@ -59,3 +82,6 @@
 		</td>
 	</tr>
 </table>
+
+</ContentTemplate>
+</asp:UpdatePanel>
