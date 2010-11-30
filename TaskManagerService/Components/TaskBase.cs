@@ -11,5 +11,6 @@ namespace FX.Services.Components
 
 		public Sage.Platform.Data.IDataService DataService { get; set; }
 		public Sage.Platform.Security.IUserService UserService { get; set; }
+		public string PortalRootPath { get; set; }
 	}
 }

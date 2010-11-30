@@ -40,6 +40,8 @@ namespace FX.Services.Components
 
 		public Sage.Platform.Security.IUserService UserService { get; set; }
 
+		public string PortalPathRoot { get; set; }
+
 		public Priority Priority { get; set; }
 
 		#endregion
@@ -116,6 +118,9 @@ namespace FX.Services.Components
 
 				var propUserSvc = this.TaskType.GetProperty("UserService");
 				propUserSvc.SetValue(obj, this.UserService, null);
+
+				var propPortalPath = this.TaskType.GetProperty("PortalRootPath");
+				propPortalPath.SetValue(obj, this.PortalPathRoot, null);
 
 				method.Invoke(obj, new object[] { this.ConfigurationNode });
 

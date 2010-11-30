@@ -8,6 +8,7 @@ using Sage.Platform.Data;
 using Sage.Platform.Security;
 using log4net;
 using FX.Services.Components;
+using System.Web.Hosting;
 
 namespace FX.Services
 {
@@ -111,6 +112,7 @@ namespace FX.Services
 						task.ConfigurationNode = node;
 						task.DataService = this.DataService;
 						task.UserService = this.UserService;
+						task.PortalPathRoot = HostingEnvironment.ApplicationPhysicalPath;
 
 						Tasks.Add(task);
 						_log.Info("Added task " + task.Name);
