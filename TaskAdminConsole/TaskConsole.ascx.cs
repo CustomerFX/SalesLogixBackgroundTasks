@@ -7,15 +7,34 @@ using System.Web.UI.WebControls;
 using Sage.Platform.WebPortal.SmartParts;
 using Sage.Platform.Application.UI;
 using Sage.Platform.Application;
+using Sage.Platform.Security;
 using FX.Services;
 using FX.Services.Components;
+using Sage.SalesLogix.Security;
 
 public partial class TaskConsole : UserControl, ISmartPartInfoProvider
 {
+	private string _currentUserName = string.Empty;
+
     protected void Page_Load(object sender, EventArgs e)
     {
+		sectionAdminControl.Visible = IsCurrentUserAdmin;
 		LoadTasks();
     }
+
+	protected bool IsCurrentUserAdmin
+	{
+		get
+		{
+			if (_currentUserName == string.Empty)
+			{
+				var userSvc = ApplicationContext.Current.Services.Get<IUserService>() as IUserService;
+				if (userSvc != null)
+					_currentUserName = userSvc.UserName.ToUpper().Trim();
+			}
+			return _currentUserName.Equals("ADMIN");
+		}
+	}
 
 	private void LoadTasks()
 	{
@@ -89,6 +108,14 @@ public partial class TaskConsole : UserControl, ISmartPartInfoProvider
 		var buttonStart = (ImageButton)e.Item.FindControl("buttonStart");
 		var buttonPause = (ImageButton)e.Item.FindControl("buttonPause");
 		var buttonDisabled = (ImageButton)e.Item.FindControl("buttonDisabled");
+
+		if (!IsCurrentUserAdmin)
+		{
+			buttonStart.Visible = false;
+			buttonPause.Visible = false;
+			buttonDisabled.Visible = false;
+			return;
+		}
 
 		buttonStart.CommandArgument = task.Name;
 		buttonPause.CommandArgument = task.Name;

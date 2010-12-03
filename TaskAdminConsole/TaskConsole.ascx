@@ -14,13 +14,15 @@
 	<tr>
 		<td>
 
-			<asp:ImageButton runat="server" ID="buttonStartAll" 
-				ImageUrl="~/images/BackgroundTasks/Task_Play_32x32.png" ImageAlign="AbsMiddle" 
-				ToolTip="Start all enabled tasks" Enabled="false" 
-				onclick="buttonStartAll_Click" />
-			<asp:ImageButton runat="server" ID="buttonPauseAll" 
-				ImageUrl="~/images/BackgroundTasks/Task_Pause_32x32.png" ImageAlign="AbsMiddle" 
-				ToolTip="Pause all tasks" Enabled="true" onclick="buttonPauseAll_Click" /><br />
+			<asp:PlaceHolder runat="server" ID="sectionAdminControl">
+				<asp:ImageButton runat="server" ID="buttonStartAll" 
+					ImageUrl="~/images/BackgroundTasks/Task_Play_32x32.png" ImageAlign="AbsMiddle" 
+					ToolTip="Start all enabled tasks" Enabled="false" 
+					onclick="buttonStartAll_Click" />
+				<asp:ImageButton runat="server" ID="buttonPauseAll" 
+					ImageUrl="~/images/BackgroundTasks/Task_Pause_32x32.png" ImageAlign="AbsMiddle" 
+					ToolTip="Pause all tasks" Enabled="true" onclick="buttonPauseAll_Click" /><br />
+			</asp:PlaceHolder>
 			<br />
 
 			<table border="0" cellpadding="0" cellspacing="0" style="width:98%;" class="datagrid">
